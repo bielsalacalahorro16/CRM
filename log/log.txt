@@ -1,4 +1,0 @@
-[Sun Jan 16 2022 16:18:14 GMT+0100 (hora estándar de Europa central)] ERROR Modules file has an incorret format
-[Sun Jan 16 2022 16:23:37 GMT+0100 (hora estándar de Europa central)] ERROR Modules file has an incorret format
-[Sun Jan 16 2022 16:24:57 GMT+0100 (hora estándar de Europa central)] WARNING All modules registered article,reservation
-[Sun Jan 16 2022 16:25:24 GMT+0100 (hora estándar de Europa central)] INFO All modules registered article,reservation
