@@ -2,7 +2,7 @@ import * as log from "https://deno.land/std@0.119.0/log/mod.ts";
 
 await log.setup({
   handlers: {
-    file: new log.handlers.FileHandler("WARNING", {
+    file: new log.handlers.FileHandler("INFO", {
       filename: "../../log/log.txt",
       formatter: "[{datetime}] {levelName} {msg}",
     }),
@@ -14,5 +14,4 @@ await log.setup({
     },
   },
 });
-const logger = log.getLogger();
-export {logger}
+export {log}

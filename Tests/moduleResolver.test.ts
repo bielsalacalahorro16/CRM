@@ -13,4 +13,3 @@ Deno.test("plugin.json is read correctly", async () => {
   assertEquals(resolver.plugins.length, 2);
   assertArrayIncludes(["article", "reservation"], resolver.plugins);
 });
-//Todo  more test cases
