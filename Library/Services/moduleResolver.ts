@@ -3,7 +3,7 @@ import { IModuleResolver } from "../interfaces/IModuleResolver.ts";
 import { log } from "../middleware/logger.ts";
 
 class ModuleResolver implements IModuleResolver {
-  plugins: string[];
+  modules: string[];
   mainApp: Application;
   modulesCount: number;
   registeredModules: string[];
@@ -11,7 +11,7 @@ class ModuleResolver implements IModuleResolver {
 
   constructor(app: Application) {
     this.mainApp = app;
-    this.plugins = [];
+    this.modules = [];
     this.modulesCount = 0;
     this.registeredModules = [];
     this.logger = log.getLogger();
@@ -19,7 +19,7 @@ class ModuleResolver implements IModuleResolver {
 
   /**
    * Register all the plugins from the modules.json file.
-   * @alpha
+   * 
    */
   async getModules(): Promise<void> {
     const decoder: TextDecoder = new TextDecoder("utf-8");
@@ -33,19 +33,18 @@ class ModuleResolver implements IModuleResolver {
     }
 
     if (parsedData.hasOwnProperty("plugins")) {
-      this.plugins = parsedData.plugins;
-      this.modulesCount = this.plugins.length;
-      this.logger.info(`All modules registered ${this.plugins}`);
+      this.modules = parsedData.plugins;
+      this.modulesCount = this.modules.length;
+      this.logger.info(`All modules registered ${this.modules}`);
     }
   }
 
   /**
    * Register all the modules as middleware in the main application.
    * @param app - main application.
-   * @alpha
    */
   async mountModules(): Promise<void> {
-    for (const plugin of this.plugins) {
+    for (const plugin of this.modules) {
       try {
         if (this.registeredModules.includes(plugin)) {
           this.logger.error(`Module: ${plugin} is already registered.`);

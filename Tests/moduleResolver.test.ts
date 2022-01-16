@@ -10,6 +10,6 @@ Deno.test("plugin.json is read correctly", async () => {
   const resolver = new ModuleResolver(app);
 
   await resolver.getModules();
-  assertEquals(resolver.plugins.length, 2);
-  assertArrayIncludes(["article", "reservation"], resolver.plugins);
+  assertEquals(resolver.modules.length, 2);
+  assertArrayIncludes(["article", "reservation"], resolver.modules);
 });
