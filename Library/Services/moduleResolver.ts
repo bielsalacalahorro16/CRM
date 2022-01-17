@@ -3,11 +3,11 @@ import { IModuleResolver } from "../interfaces/IModuleResolver.ts";
 import { log } from "../middleware/logger.ts";
 
 class ModuleResolver implements IModuleResolver {
-  modules: string[];
-  mainApp: Application;
-  modulesCount: number;
-  registeredModules: string[];
-  logger: any;
+  private modules: string[];
+  private mainApp: Application;
+  private modulesCount: number;
+  public registeredModules: string[];
+  private logger: any;
 
   constructor(app: Application) {
     this.mainApp = app;
@@ -21,7 +21,7 @@ class ModuleResolver implements IModuleResolver {
    * Register all the plugins from the modules.json file.
    * 
    */
-  async getModules(): Promise<void> {
+  protected async getModules(): Promise<void> {
     const decoder: TextDecoder = new TextDecoder("utf-8");
     const data: Uint8Array = await Deno.readFile(
       "/Users/biel.sala/Desktop/CRM/Main/plugins.json",
@@ -43,7 +43,7 @@ class ModuleResolver implements IModuleResolver {
    * Register all the modules as middleware in the main application.
    * @param app - main application.
    */
-  async mountModules(): Promise<void> {
+   public async mountModules(): Promise<void> {
     for (const plugin of this.modules) {
       try {
         if (this.registeredModules.includes(plugin)) {
@@ -76,8 +76,10 @@ class ModuleResolver implements IModuleResolver {
    * @param module - module to unregister.s
    * @alpha
    */
-  async unmountModules(mainApp: Application, module: Application) {
-    throw new Error("Method not implemented.");
+   public unmountModules(app: Application, module: string) {
+    //Module must be type of string, e.g: article.
+    //Will search for all the routes which the path starts with the module name and remove them
+    //Using the app_router.stack 
   }
 }
 export { ModuleResolver };
