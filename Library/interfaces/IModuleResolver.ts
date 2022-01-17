@@ -5,6 +5,6 @@ interface IModuleResolver extends IBase{
   mainApp: Application;
   getModules(): Promise<void>;
   mountModules(app: Application): Promise<void>;
-  unmountModules(app: Application, module: Application): Promise<void>;
+  unmountModules(app: Application, module: string): Promise<void>;
 }
 export type {IModuleResolver}
