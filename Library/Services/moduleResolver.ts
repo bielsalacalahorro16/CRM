@@ -2,6 +2,7 @@ import { Application } from "https://deno.land/x/opine@2.1.1/mod.ts";
 import { IModuleResolver } from "../interfaces/IModuleResolver.ts";
 import { log } from "../middleware/logger.ts";
 
+//Add event to emit the current loading
 class ModuleResolver implements IModuleResolver {
   private modules: string[];
   private mainApp: Application;
