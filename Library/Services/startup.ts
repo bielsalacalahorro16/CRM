@@ -8,16 +8,8 @@ class Startup {
    * Execute the ModuleResolver class. This method must be run before the app.listen().
    * @alpha
    */
-  static async start(app: Application) {
-    try {
-      const moduleResolver = new ModuleResolver(app);
-      await moduleResolver.getModules();
-      await moduleResolver.mountModules();
-
-    } catch (error) {
-      //Implement error handling
-    }
-   
+  static async run(app: Application) {
+    
   }
 
 }

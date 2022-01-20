@@ -1,13 +1,13 @@
 import { Application } from "https://deno.land/x/opine@2.1.1/mod.ts";
 import { IModuleResolver } from "../interfaces/IModuleResolver.ts";
 import { log } from "../middleware/logger.ts";
+import { Module } from "../models/module.ts";
 
-//Add event to emit the current loading
 class ModuleResolver implements IModuleResolver {
-  private modules: string[];
+  private modules: Module[];
   private mainApp: Application;
   private modulesCount: number;
-  public registeredModules: string[];
+  public registeredModules: Module[];
   private logger: any;
 
   constructor(app: Application) {
@@ -18,25 +18,35 @@ class ModuleResolver implements IModuleResolver {
     this.logger = log.getLogger();
   }
 
-  /**
-   * Register all the plugins from the modules.json file.
-   * 
-   */
-  protected async getModules(): Promise<void> {
-    const decoder: TextDecoder = new TextDecoder("utf-8");
-    const data: Uint8Array = await Deno.readFile(
-      "/Users/biel.sala/Desktop/CRM/Main/plugins.json",
-    );
-    const parsedData = JSON.parse(decoder.decode(data));
-
-    if (!parsedData.hasOwnProperty("plugins")) {
-      this.logger.error("Modules file has an incorrects format");
+  private async getConfigFiles(currentPath: string) {
+    for await (const dirEntry of Deno.readDir(currentPath)) {
+      const entryPath = `${currentPath}/${dirEntry.name}`;
+      const splitedFile = dirEntry.name.split(".");
+      if (
+        splitedFile[0].toLowerCase() === "module" &&
+        splitedFile[1].toLowerCase() === "json"
+      ) {
+        const module: Module = {
+          Path: entryPath,
+        };
+        this.modules.push(module);
+      }
+      if (dirEntry.isDirectory) {
+        await this.getConfigFiles(entryPath);
+      }
     }
+  }
 
-    if (parsedData.hasOwnProperty("plugins")) {
-      this.modules = parsedData.plugins;
-      this.modulesCount = this.modules.length;
-      this.logger.info(`All modules registered ${this.modules}`);
+  private async readConfigFiles() {
+    for (const module of this.modules) {
+      const decoder: TextDecoder = new TextDecoder("utf-8");
+      const data: Uint8Array = await Deno.readFile(
+        module.Path,
+      );
+
+      const parsedData = JSON.parse(decoder.decode(data));
+      module.Name = parsedData.file;
+      module.Path = module.Path.replace("module.json", parsedData.file);
     }
   }
 
@@ -44,25 +54,24 @@ class ModuleResolver implements IModuleResolver {
    * Register all the modules as middleware in the main application.
    * @param app - main application.
    */
-   public async mountModules(): Promise<void> {
-    for (const plugin of this.modules) {
+  public async mountModules(): Promise<void> {
+    for (const module of this.modules) {
       try {
-        if (this.registeredModules.includes(plugin)) {
-          this.logger.error(`Module: ${plugin} is already registered.`);
+        if (this.registeredModules.includes(module)) {
+          this.logger.error(`Module: ${module} is already registered.`);
         }
 
-        const modulePath = `../Plugins/${plugin}/${plugin}.ts`;
-        const path = await Deno.stat(modulePath);
+        const path = await Deno.stat(module.Path);
         if (!path.isFile) {
           this.logger.warning(
-            `Path: ${path} for module: ${plugin} is not existing.`,
+            `Path: ${path} for module: ${module} is not existing.`,
           );
         }
 
-        const { app } = await import(modulePath);
+        const { app } = await import(module.Path);
         if (typeof app === "function") {
           this.mainApp.use(app);
-          this.registeredModules.push(plugin);
+          this.registeredModules.push(module);
           this.logger.info(`Module loaded ${app}`);
         }
       } catch (error) {
@@ -77,10 +86,10 @@ class ModuleResolver implements IModuleResolver {
    * @param module - module to unregister.s
    * @alpha
    */
-   public unmountModules(app: Application, module: string) {
+  public unmountModules(app: Application, module: string) {
     //Module must be type of string, e.g: article.
     //Will search for all the routes which the path starts with the module name and remove them
-    //Using the app_router.stack 
+    //Using the app_router.stack
   }
 }
 export { ModuleResolver };
