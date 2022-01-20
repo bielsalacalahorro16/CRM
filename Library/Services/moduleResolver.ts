@@ -1,7 +1,7 @@
 import { Application } from "https://deno.land/x/opine@2.1.1/mod.ts";
 import { IModuleResolver } from "../interfaces/IModuleResolver.ts";
 import { log } from "../middleware/logger.ts";
-import { Module } from "../models/module.ts";
+import { Module } from "../types/module.ts";
 
 class ModuleResolver implements IModuleResolver {
   private modules: Module[];
@@ -50,10 +50,7 @@ class ModuleResolver implements IModuleResolver {
     }
   }
 
-  /**
-   * Register all the modules as middleware in the main application.
-   * @param app - main application.
-   */
+  
   public async mountModules(): Promise<void> {
     for (const module of this.modules) {
       try {
