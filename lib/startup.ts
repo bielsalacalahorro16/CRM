@@ -8,7 +8,7 @@ class Startup {
    * Execute the ModuleResolver class. This method must be run before the app.listen().
    * @alpha
    */
-  static async run(app: Application) {
+  static async init(app: Application) {
     
   }
 
