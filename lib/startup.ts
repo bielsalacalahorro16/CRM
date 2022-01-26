@@ -1,16 +1,23 @@
-import {ModuleResolver} from '../Services/moduleResolver.ts';
+import { ModuleResolver } from "./moduleResolver.ts";
+import { FileService } from "./fileService.ts";
 import { Application } from "https://deno.land/x/opine@2.1.1/mod.ts";
 
-
 class Startup {
-
-  /**
-   * Execute the ModuleResolver class. This method must be run before the app.listen().
-   * @alpha
-   */
-  static async init(app: Application) {
-    
+  moduleResolver: ModuleResolver;
+  fileService: FileService;
+  app: Application;
+  constructor(app: Application) {
+    this.moduleResolver = new ModuleResolver(app);
+    this.fileService = new FileService();
+    this.app = app;
   }
-
+  async init() {
+    try {
+      const modules = await this.fileService.readConfigFiles();
+      await this.moduleResolver.mountModules(modules);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }
-export {Startup};
+export { Startup };

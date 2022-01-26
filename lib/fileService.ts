@@ -1,6 +1,6 @@
 import { Module } from "./types/module.ts";
 
-export class FileHandler {
+class FileService {
   private modules: Module[];
 
   constructor() {
@@ -22,7 +22,8 @@ export class FileHandler {
     }
   }
 
-  private async readConfigFiles() {
+  public async readConfigFiles() {
+    await this.getConfigFiles("");
     for (const module of this.modules) {
       const decoder: TextDecoder = new TextDecoder("utf-8");
       const data: Uint8Array = await Deno.readFile(
@@ -33,5 +34,7 @@ export class FileHandler {
       module.Name = parsedData.file;
       module.Path = module.Path.replace("module.json", parsedData.file);
     }
+    return this.modules;
   }
 }
+export { FileService };

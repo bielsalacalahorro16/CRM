@@ -5,13 +5,11 @@ import { Module } from "./types/module.ts";
 
 class ModuleResolver implements IModuleResolver {
   private mainApp: Application;
-  private modulesCount: number;
   public registeredModules: Module[];
   private logger: any;
 
   constructor(app: Application) {
     this.mainApp = app;
-    this.modulesCount = 0;
     this.registeredModules = [];
     this.logger = log.getLogger();
   }
@@ -42,8 +40,7 @@ class ModuleResolver implements IModuleResolver {
     }
   }
 
-  public unmountModules(app: Application, module: string) {
-   
+  public unmountModules(app: Application, modules: string[]) {
   }
 }
 export { ModuleResolver };
