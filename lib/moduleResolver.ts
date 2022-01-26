@@ -43,9 +43,7 @@ class ModuleResolver implements IModuleResolver {
   }
 
   public unmountModules(app: Application, module: string) {
-    //Module must be type of string, e.g: article.
-    //Will search for all the routes which the path starts with the module name and remove them
-    //Using the app_router.stack
+   
   }
 }
 export { ModuleResolver };
